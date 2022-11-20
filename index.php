@@ -1,9 +1,26 @@
+<?php
+
+session_start();
+
+if (isset($_SESSION["user_id"])) {
+    
+    $mysqli = require __DIR__ . "/database.php";
+    
+    $sql = "SELECT * FROM user
+            WHERE id = {$_SESSION["user_id"]}";
+            
+    $result = $mysqli->query($sql);
+    
+    $user = $result->fetch_assoc();
+}
+?>
 <!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/js/validation.js" defer></script>
     <title>Naapuri</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
@@ -39,61 +56,26 @@
                 </ul>
 
                 <div class="col-md-3 text-end">
-                    <button type="submit" class="btn btn-outline-primary me-2" onClick="location.href='login.php'">Login</button>
+                <button type="submit" class="btn btn-outline-primary me-2" onClick="location.href='login.php'">Login</button>
                     <button type="submit" class="btn btn-primary" onClick="location.href='signup.html'">Sign-up</button>
                 </div>
             </header>
         </div>
-
-        <div class="container">
-
-
-            <div class="row featurette">
-                <div class="col-md-7">
-                    <h2 class="featurette-heading fw-normal lh-1">Naapurit on oma naapurisi sosiaalinen verkosto.</h2>
-                    <p class="lead">Naapurit on oma naapurisi sosiaalinen verkosto. Tämä on tilasi ajatusten ja ehdotusten vaihtoon. Tarjoamme monikerroksisen talon palvelujen kätevän käytön.
-                </div>
-                <div class="col-md-5">
-                    <!-- <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500"
-        xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500"
-        preserveAspectRatio="xMidYMid slice" focusable="false">
-        <title>Placeholder</title>
-        <rect width="100%" height="100%" fill="#eee" /><text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text>
-      </svg> -->
-                    <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" src="https://www.shutterstock.com/image-vector/people-looking-out-windows-set-600w-1511586977.jpg" alt="">
-
+        <?php if (isset($user)): ?>
+        
+        <p>Hello <?= htmlspecialchars($user["name"]) ?></p>
+        
+        <p><a href="logout.php">Log out</a></p>
+        
+    <?php else: ?>
+        
+        <p><a href="login.php">Log in</a> or <a href="signup.html">sign up</a></p>
+        
+    <?php endif; ?>
                 </div>
             </div>
-
-            <hr class="featurette-divider">
-
-            <div class="row featurette">
-                <div class="col-md-7 order-md-2">
-                    <h2 class="featurette-heading fw-normal lh-1">Oh yeah, it’s that good. <span class="text-muted">See for
-          yourself.</span></h2>
-                    <p class="lead">Naapurit on oma naapurisi sosiaalinen verkosto. Tämä on tilasi ajatusten ja ehdotusten vaihtoon. Tarjoamme monikerroksisen talon palvelujen kätevän käytön.</p>
-                </div>
-                <div class="col-md-5 order-md-1">
-                    <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" src="https://www.shutterstock.com/image-vector/people-open-window-spaces-home-600w-1910757988.jpg" alt="">
-                </div>
-            </div>
-
-            <hr class="featurette-divider">
-
-            <div class="row featurette">
-                <div class="col-md-7">
-                    <h2 class="featurette-heading fw-normal lh-1">And lastly, this one. <span class="text-muted">Checkmate.</span>
-                    </h2>
-                    <p class="lead">Naapurit on oma naapurisi sosiaalinen verkosto. Tämä on tilasi ajatusten ja ehdotusten vaihtoon. Tarjoamme monikerroksisen talon palvelujen kätevän käytön.</p>
-                </div>
-                <div class="col-md-5">
-                    <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" src="https://www.shutterstock.com/image-vector/people-facade-building-windows-vector-600w-1790196941.jpg" alt="">
-
-                </div>
-            </div>
-
-
         </div>
+
         <div class="container">
             <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
                 <div class="col-md-4 d-flex align-items-center">
